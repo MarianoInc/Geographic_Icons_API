@@ -10,6 +10,8 @@ namespace Geographic_Icons_API
         public DateTime FinishingDate { get; set; }
         public int Height { get; set; }
         public string History { get; set; }
-        public ICollection<CityCountry> CitiesCountries { get; set; }
+
+        
+        public CityCountry CityCountry { get; set; }
     }
 }

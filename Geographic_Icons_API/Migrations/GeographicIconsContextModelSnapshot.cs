@@ -35,9 +35,6 @@ namespace Geographic_Icons_API.Migrations
                     b.Property<int?>("ContinentId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("GeographicIconId")
-                        .HasColumnType("int");
-
                     b.Property<decimal>("Population")
                         .HasColumnType("decimal(20,0)");
 
@@ -47,8 +44,6 @@ namespace Geographic_Icons_API.Migrations
                     b.HasKey("CityCountryId");
 
                     b.HasIndex("ContinentId");
-
-                    b.HasIndex("GeographicIconId");
 
                     b.ToTable("CitiesCountries");
                 });
@@ -78,6 +73,9 @@ namespace Geographic_Icons_API.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("CityCountryId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("FinishingDate")
                         .HasColumnType("datetime2");
 
@@ -92,6 +90,8 @@ namespace Geographic_Icons_API.Migrations
 
                     b.HasKey("GeographicIconId");
 
+                    b.HasIndex("CityCountryId");
+
                     b.ToTable("GeographicIcons");
                 });
 
@@ -100,10 +100,13 @@ namespace Geographic_Icons_API.Migrations
                     b.HasOne("Geographic_Icons_API.Continent", "Continent")
                         .WithMany("Cities_Countries")
                         .HasForeignKey("ContinentId");
+                });
 
-                    b.HasOne("Geographic_Icons_API.GeographicIcon", "GeographicIcon")
-                        .WithMany("CitiesCountries")
-                        .HasForeignKey("GeographicIconId");
+            modelBuilder.Entity("Geographic_Icons_API.GeographicIcon", b =>
+                {
+                    b.HasOne("Geographic_Icons_API.CityCountry", "CityCountry")
+                        .WithMany("GeographicIcon")
+                        .HasForeignKey("CityCountryId");
                 });
 #pragma warning restore 612, 618
         }

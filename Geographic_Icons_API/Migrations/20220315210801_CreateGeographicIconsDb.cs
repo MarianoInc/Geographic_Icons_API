@@ -22,22 +22,6 @@ namespace Geographic_Icons_API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "GeographicIcons",
-                columns: table => new
-                {
-                    GeographicIconId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    GeographicIconPicture = table.Column<byte[]>(nullable: true),
-                    FinishingDate = table.Column<DateTime>(nullable: false),
-                    Height = table.Column<int>(nullable: false),
-                    History = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_GeographicIcons", x => x.GeographicIconId);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "CitiesCountries",
                 columns: table => new
                 {
@@ -47,8 +31,7 @@ namespace Geographic_Icons_API.Migrations
                     CityCountryName = table.Column<string>(nullable: true),
                     Population = table.Column<decimal>(nullable: false),
                     TotalLandArea = table.Column<decimal>(nullable: false),
-                    ContinentId = table.Column<int>(nullable: true),
-                    GeographicIconId = table.Column<int>(nullable: true)
+                    ContinentId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -59,11 +42,28 @@ namespace Geographic_Icons_API.Migrations
                         principalTable: "Continents",
                         principalColumn: "ContinentId",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GeographicIcons",
+                columns: table => new
+                {
+                    GeographicIconId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    GeographicIconPicture = table.Column<byte[]>(nullable: true),
+                    FinishingDate = table.Column<DateTime>(nullable: false),
+                    Height = table.Column<int>(nullable: false),
+                    History = table.Column<string>(nullable: true),
+                    CityCountryId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GeographicIcons", x => x.GeographicIconId);
                     table.ForeignKey(
-                        name: "FK_CitiesCountries_GeographicIcons_GeographicIconId",
-                        column: x => x.GeographicIconId,
-                        principalTable: "GeographicIcons",
-                        principalColumn: "GeographicIconId",
+                        name: "FK_GeographicIcons_CitiesCountries_CityCountryId",
+                        column: x => x.CityCountryId,
+                        principalTable: "CitiesCountries",
+                        principalColumn: "CityCountryId",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -73,21 +73,21 @@ namespace Geographic_Icons_API.Migrations
                 column: "ContinentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CitiesCountries_GeographicIconId",
-                table: "CitiesCountries",
-                column: "GeographicIconId");
+                name: "IX_GeographicIcons_CityCountryId",
+                table: "GeographicIcons",
+                column: "CityCountryId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "GeographicIcons");
+
+            migrationBuilder.DropTable(
                 name: "CitiesCountries");
 
             migrationBuilder.DropTable(
                 name: "Continents");
-
-            migrationBuilder.DropTable(
-                name: "GeographicIcons");
         }
     }
 }
