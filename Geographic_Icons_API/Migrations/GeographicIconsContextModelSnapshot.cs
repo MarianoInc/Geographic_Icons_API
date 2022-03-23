@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Geographic_Icons_API.Migrations
+namespace ChallengeAlternativo.API.Migrations
 {
     [DbContext(typeof(GeographicIconsContext))]
     partial class GeographicIconsContextModelSnapshot : ModelSnapshot
@@ -19,33 +19,33 @@ namespace Geographic_Icons_API.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Geographic_Icons_API.CityCountry", b =>
+            modelBuilder.Entity("Geographic_Icons_API.City", b =>
                 {
-                    b.Property<int>("CityCountryId")
+                    b.Property<int>("CityId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("CityCountryName")
+                    b.Property<decimal>("Area")
+                        .HasColumnType("decimal(20,0)");
+
+                    b.Property<string>("CityName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<byte[]>("CityCountryPicture")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<string>("CityPicture")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ContinentId")
+                    b.Property<int>("ContinentId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Population")
                         .HasColumnType("decimal(20,0)");
 
-                    b.Property<decimal>("TotalLandArea")
-                        .HasColumnType("decimal(20,0)");
-
-                    b.HasKey("CityCountryId");
+                    b.HasKey("CityId");
 
                     b.HasIndex("ContinentId");
 
-                    b.ToTable("CitiesCountries");
+                    b.ToTable("Cities");
                 });
 
             modelBuilder.Entity("Geographic_Icons_API.Continent", b =>
@@ -55,11 +55,11 @@ namespace Geographic_Icons_API.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("ContinentName")
+                    b.Property<string>("ContinentDenomination")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<byte[]>("ContinentPicture")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<string>("ContinentPicture")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ContinentId");
 
@@ -73,14 +73,17 @@ namespace Geographic_Icons_API.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("CityCountryId")
+                    b.Property<int>("CityId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("FinishingDate")
+                    b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<byte[]>("GeographicIconPicture")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<string>("GeographicIconDenomination")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("GeographicIconPicture")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Height")
                         .HasColumnType("int");
@@ -90,23 +93,27 @@ namespace Geographic_Icons_API.Migrations
 
                     b.HasKey("GeographicIconId");
 
-                    b.HasIndex("CityCountryId");
+                    b.HasIndex("CityId");
 
                     b.ToTable("GeographicIcons");
                 });
 
-            modelBuilder.Entity("Geographic_Icons_API.CityCountry", b =>
+            modelBuilder.Entity("Geographic_Icons_API.City", b =>
                 {
                     b.HasOne("Geographic_Icons_API.Continent", "Continent")
-                        .WithMany("Cities_Countries")
-                        .HasForeignKey("ContinentId");
+                        .WithMany("Cities")
+                        .HasForeignKey("ContinentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Geographic_Icons_API.GeographicIcon", b =>
                 {
-                    b.HasOne("Geographic_Icons_API.CityCountry", "CityCountry")
+                    b.HasOne("Geographic_Icons_API.City", "City")
                         .WithMany("GeographicIcon")
-                        .HasForeignKey("CityCountryId");
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

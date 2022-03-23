@@ -2,13 +2,15 @@
 
 namespace Geographic_Icons_API
 {
-    public class CityCountry
+    public class City
     {
-        public int CityCountryId { get; set; }
-        public byte[] CityCountryPicture { get; set; }
-        public string CityCountryName { get; set; }
+        public int CityId { get; set; }
+        public string CityPicture { get; set; }
+        public string CityName { get; set; }
         public ulong Population { get; set; }
-        public ulong TotalLandArea { get; set; }
+        public ulong Area { get; set; }
+
+        public int ContinentId { get; set; }
         public Continent Continent { get; set; }
 
 

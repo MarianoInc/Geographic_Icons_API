@@ -29,15 +29,15 @@ namespace Geographic_Icons_API.Repositories
             _dbContext.SaveChanges();
             return entity;
         }
-        public TEntity Update(TEntity entity)
+        public virtual TEntity Update(TEntity entity)
         {
             if (entity == null) throw new ArgumentNullException(nameof(entity), "La entidad no puede ser nula");
             _dbContext.Set<TEntity>().Attach(entity);
             _dbContext.Entry(entity).State = EntityState.Modified;
-            
+            _dbContext.SaveChanges();
             return entity;
         }
-        public TEntity Delete(int? id)
+        public virtual TEntity Delete(int? id)
         {
             if (id == null) throw new ArgumentNullException(nameof(id), "El id no puede ser nulo.");
             var internalContinent = _dbContext.Set<TEntity>().Find(id);

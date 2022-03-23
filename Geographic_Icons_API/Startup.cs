@@ -31,14 +31,16 @@ namespace Geographic_Icons_API
         public void ConfigureServices(IServiceCollection services)
         {
 
+            //En este caso no es necesario
+            //services.AddEntityFrameworkSqlServer();
 
-            services.AddEntityFrameworkSqlServer();
+            services.AddDbContext<GeographicIconsContext>(options => options.UseSqlServer(Configuration.GetConnectionString("GeographicIconsConnectionString")));
 
             //Añadiendo GeographicIconsContext a contenedor de dependencias de EFCore.
-            services.AddDbContextPool<GeographicIconsContext>(optionsAction:(services, options)=>{
-                options.UseInternalServiceProvider(services);
-                options.UseSqlServer(Configuration.GetConnectionString("GeographicIconsConnectionString"));
-            });
+            //services.AddDbContextPool<GeographicIconsContext>(optionsAction:(services, options)=>{
+            //    options.UseInternalServiceProvider(services);
+            //    options.UseSqlServer(Configuration.GetConnectionString("GeographicIconsConnectionString"));
+            //});
             //Agrego repositorio de continentes
             services.AddScoped<IContinentRepository, ContinentRepository>();
             //Agrego repositorio de Ciudades

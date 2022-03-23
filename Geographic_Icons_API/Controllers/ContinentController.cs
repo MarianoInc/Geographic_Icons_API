@@ -1,10 +1,11 @@
 ﻿using Geographic_Icons_API.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
 namespace Geographic_Icons_API.Controllers
 {
     [ApiController]
-    [Route(template:"api/[controller]")]
+    [Route(template:"api/continents")]
     public class ContinentController : ControllerBase
     {
         //Inyección de Contexto para tener acceso a la DB.
@@ -27,16 +28,23 @@ namespace Geographic_Icons_API.Controllers
         //Nos devuelve el 1 uno en el mismo formato porque esto no poseee una estructura todavía, es solamente un valor numérico.
         //La diferencia es que ahora nosotros devolvemos un código http específico desde el código.
         
-        
         [HttpGet]
         public IActionResult Get()
-        {            
-            return Ok(_continentRepository.GetAllEntities());   
-        }
-
-        [HttpGet]
-        public IActionResult Get(int id)
         {
+            var selectMethod = _continentRepository.GetAllEntities().
+                                          Select(continent => new
+                                          {
+                                              ContinentName = continent.ContinentDenomination,
+                                              ContinentPicture = continent.ContinentPicture,
+                                          }).ToList();
+
+            return Ok(selectMethod);   
+        }
+        
+        [HttpGet]
+        [Route(template:"{id}")]
+        public IActionResult Details(int id)
+        {            
             return Ok(_continentRepository.Get(id));
         }
 
@@ -44,7 +52,8 @@ namespace Geographic_Icons_API.Controllers
         [HttpPost]
         public IActionResult Post(Continent continent)
         {
-            return Ok(_continentRepository.Post(continent));
+            _continentRepository.Post(continent);            
+            return Ok(_continentRepository.GetAllEntities().ToList());
         }
 
         //Modificar

@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Geographic_Icons_API.Migrations
+namespace ChallengeAlternativo.API.Migrations
 {
-    public partial class CreateGeographicIconsDb : Migration
+    public partial class GeographicIconsDb : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,8 +13,8 @@ namespace Geographic_Icons_API.Migrations
                 {
                     ContinentId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ContinentPicture = table.Column<byte[]>(nullable: true),
-                    ContinentName = table.Column<string>(nullable: true)
+                    ContinentPicture = table.Column<string>(nullable: true),
+                    ContinentDenomination = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -22,26 +22,26 @@ namespace Geographic_Icons_API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CitiesCountries",
+                name: "Cities",
                 columns: table => new
                 {
-                    CityCountryId = table.Column<int>(nullable: false)
+                    CityId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CityCountryPicture = table.Column<byte[]>(nullable: true),
-                    CityCountryName = table.Column<string>(nullable: true),
+                    CityPicture = table.Column<string>(nullable: true),
+                    CityName = table.Column<string>(nullable: true),
                     Population = table.Column<decimal>(nullable: false),
-                    TotalLandArea = table.Column<decimal>(nullable: false),
-                    ContinentId = table.Column<int>(nullable: true)
+                    Area = table.Column<decimal>(nullable: false),
+                    ContinentId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CitiesCountries", x => x.CityCountryId);
+                    table.PrimaryKey("PK_Cities", x => x.CityId);
                     table.ForeignKey(
-                        name: "FK_CitiesCountries_Continents_ContinentId",
+                        name: "FK_Cities_Continents_ContinentId",
                         column: x => x.ContinentId,
                         principalTable: "Continents",
                         principalColumn: "ContinentId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -50,32 +50,33 @@ namespace Geographic_Icons_API.Migrations
                 {
                     GeographicIconId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    GeographicIconPicture = table.Column<byte[]>(nullable: true),
-                    FinishingDate = table.Column<DateTime>(nullable: false),
+                    GeographicIconDenomination = table.Column<string>(nullable: true),
+                    GeographicIconPicture = table.Column<string>(nullable: true),
+                    CreationDate = table.Column<DateTime>(nullable: false),
                     Height = table.Column<int>(nullable: false),
                     History = table.Column<string>(nullable: true),
-                    CityCountryId = table.Column<int>(nullable: true)
+                    CityId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_GeographicIcons", x => x.GeographicIconId);
                     table.ForeignKey(
-                        name: "FK_GeographicIcons_CitiesCountries_CityCountryId",
-                        column: x => x.CityCountryId,
-                        principalTable: "CitiesCountries",
-                        principalColumn: "CityCountryId",
-                        onDelete: ReferentialAction.Restrict);
+                        name: "FK_GeographicIcons_Cities_CityId",
+                        column: x => x.CityId,
+                        principalTable: "Cities",
+                        principalColumn: "CityId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_CitiesCountries_ContinentId",
-                table: "CitiesCountries",
+                name: "IX_Cities_ContinentId",
+                table: "Cities",
                 column: "ContinentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GeographicIcons_CityCountryId",
+                name: "IX_GeographicIcons_CityId",
                 table: "GeographicIcons",
-                column: "CityCountryId");
+                column: "CityId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -84,7 +85,7 @@ namespace Geographic_Icons_API.Migrations
                 name: "GeographicIcons");
 
             migrationBuilder.DropTable(
-                name: "CitiesCountries");
+                name: "Cities");
 
             migrationBuilder.DropTable(
                 name: "Continents");
