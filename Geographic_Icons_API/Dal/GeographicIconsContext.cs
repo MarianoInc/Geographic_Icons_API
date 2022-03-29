@@ -5,7 +5,7 @@ namespace Geographic_Icons_API.Data
     public class GeographicIconsContext : DbContext
     {
         //Envio opciones adicionales a la clase DbContext a través de options e inicializo Configuration.
-        public GeographicIconsContext(DbContextOptions options) : base(options)
+        public GeographicIconsContext(DbContextOptions<GeographicIconsContext> options) : base(options)
         {
 
         }

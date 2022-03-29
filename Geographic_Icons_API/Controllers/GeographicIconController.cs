@@ -1,4 +1,5 @@
 ﻿using Geographic_Icons_API.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ namespace Geographic_Icons_API.Controllers
 {
     [Route("api/icons")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     public class GeographicIconController : ControllerBase
     {
         //Inyección de dependencia.
@@ -21,47 +23,43 @@ namespace Geographic_Icons_API.Controllers
         //Obtener entidades
         [HttpGet]
         public IActionResult Get(DateTime? date, string name = "", int cities = 0)
-        {            
-             
+        {
+            var selectMethod = _iconsRepository.GetAllEntities(); 
             if (!String.IsNullOrEmpty(name))
             {
-                var selectMethod = _iconsRepository.GetAllEntities().Where(icon => icon.GeographicIconDenomination.ToUpper() == name.ToUpper())
-                                        .Select(icon => new {
-                                            IconPicture = icon.GeographicIconPicture,
-                                            IconDenomination = icon.GeographicIconDenomination
+                selectMethod = selectMethod.Where(icon => icon.GeographicIconDenomination.ToUpper() == name.ToUpper())
+                                        .Select(icon => new GeographicIcon{
+                                            GeographicIconPicture = icon.GeographicIconPicture,
+                                            GeographicIconDenomination = icon.GeographicIconDenomination
                                         })
                                         .ToList();
-                return Ok(selectMethod);
             }
             else if(date.HasValue)
             {
-                var selectMethod = _iconsRepository.GetAllEntities().Where(icon => icon.CreationDate.Date == date.Value.Date && icon.CreationDate.Hour == date.Value.Hour
+                selectMethod = selectMethod.Where(icon => icon.CreationDate.Date == date.Value.Date && icon.CreationDate.Hour == date.Value.Hour
                 && icon.CreationDate.Minute == date.Value.Minute && icon.CreationDate.Second == date.Value.Second)
-                                        .Select(icon => new {
-                                            IconPicture = icon.GeographicIconPicture,
-                                            IconDenomination = icon.GeographicIconDenomination
+                                        .Select(icon => new GeographicIcon{
+                                            GeographicIconPicture = icon.GeographicIconPicture,
+                                            GeographicIconDenomination = icon.GeographicIconDenomination
                                         })
                                         .ToList();
-                return Ok(selectMethod);
             }
             else if (cities != 0)
             {
-                var selectMethod = _iconsRepository.GetAllEntities().Where(icon => icon.CityId == cities)
-                                        .Select(icon => new {
-                                            IconPicture = icon.GeographicIconPicture,
-                                            IconDenomination = icon.GeographicIconDenomination
+                selectMethod = selectMethod.Where(icon => icon.CityId == cities)
+                                        .Select(icon => new GeographicIcon{
+                                            GeographicIconPicture = icon.GeographicIconPicture,
+                                            GeographicIconDenomination = icon.GeographicIconDenomination
                                         }).ToList();
-                return Ok(selectMethod);
             }
             else
             {
-                var selectMethod = _iconsRepository.GetAllEntities().Select(icon => new {
-                                IconPicture = icon.GeographicIconPicture,
-                                IconDenomination = icon.GeographicIconDenomination
+                selectMethod = selectMethod.Select(icon => new GeographicIcon{
+                                GeographicIconPicture = icon.GeographicIconPicture,
+                                GeographicIconDenomination = icon.GeographicIconDenomination
                             }).ToList();
-                return Ok(selectMethod);
-            }          
-            
+            }
+            return Ok(selectMethod);
         }
 
         //Obtener detalles

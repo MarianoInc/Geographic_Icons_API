@@ -1,11 +1,14 @@
 ﻿using Geographic_Icons_API.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 
 namespace Geographic_Icons_API.Controllers
 {
+    //Seteamos que este controlador solo será accedido por un user autentificado
     [ApiController]
     [Route(template:"api/continents")]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     public class ContinentController : ControllerBase
     {
         //Inyección de Contexto para tener acceso a la DB.
